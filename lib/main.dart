@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       getPages: [
         GetPage(name: '/', page: () => HomeScreen()),
+        // GetPage(name: '/detail', page: () => DetailScreen()),
         GetPage(name: '/splash', page: () => SplashScreen()),
-        GetPage(name: '/details', page: () => DetailScreen()),
         GetPage(name: '/favorites', page: () => FavoritesScreen()),
       ],
     );
