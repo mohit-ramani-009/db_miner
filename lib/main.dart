@@ -1,10 +1,8 @@
-import 'package:db_miner/screen/detail_screen.dart';
 import 'package:db_miner/screen/fav_screen.dart';
 import 'package:db_miner/screen/home_screen.dart';
 import 'package:db_miner/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 void main() {
   runApp(MyApp());
@@ -19,7 +17,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       getPages: [
         GetPage(name: '/', page: () => HomeScreen()),
-        // GetPage(name: '/detail', page: () => DetailScreen()),
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/favorites', page: () => FavoritesScreen()),
       ],

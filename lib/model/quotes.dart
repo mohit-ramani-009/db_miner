@@ -9,7 +9,6 @@ class Quote {
     required this.author,
   });
 
-  // From JSON to Quote
   factory Quote.fromJson(Map<String, dynamic> json) {
     return Quote(
       id: json['id'],
@@ -18,7 +17,6 @@ class Quote {
     );
   }
 
-  // From Quote to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,

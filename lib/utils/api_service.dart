@@ -5,7 +5,6 @@ import '../model/quotes.dart';
 class QuoteService {
   static const String _url = "https://dummyjson.com/quotes/";
 
-  // Fetch quotes from the API
   Future<List<Quote>> fetchQuotes() async {
     final response = await http.get(Uri.parse(_url));
 

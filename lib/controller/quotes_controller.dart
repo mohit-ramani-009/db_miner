@@ -6,9 +6,9 @@ import '../utils/database_helper.dart';
 import '../utils/api_service.dart';
 
 class QuoteController extends GetxController {
-  var quotes = <Quote>[].obs; // All quotes (fetched)
-  var favoriteQuotes = <Quote>[].obs; // Filtered list of favorites
-  var favoriteIds = <int>[].obs; // List of favorite quote IDs
+  var quotes = <Quote>[].obs;
+  RxList<int> favoriteIds = <int>[].obs;
+  RxList<Quote> favoriteQuotes = <Quote>[].obs;
 
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   final QuoteService _quoteService = QuoteService();
@@ -16,11 +16,10 @@ class QuoteController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadQuotes(); // Load all quotes from DB or API
-    loadFavorites(); // Load favorite quotes from SharedPreferences and DB
+    loadQuotes();
+    loadFavorites();
   }
 
-  // Load all quotes from the database or API
   void loadQuotes() async {
     final storedQuotes = await _dbHelper.fetchAllQuotes();
     if (storedQuotes.isNotEmpty) {
@@ -30,7 +29,6 @@ class QuoteController extends GetxController {
     }
   }
 
-  // Fetch quotes from API and save them to the database
   void fetchQuotesFromAPI() async {
     try {
       final fetchedQuotes = await _quoteService.fetchQuotes();
@@ -43,33 +41,42 @@ class QuoteController extends GetxController {
     }
   }
 
-  // Load favorite quotes from SharedPreferences and sync with DB
   void loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favoriteIdsList = prefs.getStringList('favorite_ids') ?? [];
-    favoriteIds.value = favoriteIdsList.map((id) => int.parse(id)).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final favoriteIdsList = prefs.getStringList('favorite_ids') ?? [];
+      favoriteIds.value = favoriteIdsList.map((id) => int.parse(id)).toList();
 
-    final allQuotes = await _dbHelper.fetchAllQuotes();
-    favoriteQuotes.value = allQuotes.where((quote) {
-      return favoriteIds.contains(quote.id);
-    }).toList();
-  }
-
-  // Toggle a quote's favorite status (add or remove)
-  void toggleFavorite(Quote quote) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (favoriteIds.contains(quote.id)) {
-      favoriteIds.remove(quote.id);
-      await _dbHelper.deleteQuote(quote.id);
-    } else {
-      favoriteIds.add(quote.id);
-      await _dbHelper.insertQuote(quote);
+      final allQuotes = await _dbHelper.fetchAllQuotes();
+      favoriteQuotes.value = allQuotes.where((quote) {
+        return favoriteIds.contains(quote.id);
+      }).toList();
+    } catch (e) {
+      print('Error loading favorites: $e');
     }
-    await prefs.setStringList('favorite_ids', favoriteIds.map((id) => id.toString()).toList());
-    loadFavorites();
   }
 
-  // Check if a quote is in the favorites list
+  void toggleFavorite(Quote quote) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      if (favoriteIds.contains(quote.id)) {
+        favoriteIds.remove(quote.id);
+        await _dbHelper.deleteQuote(quote.id);
+      } else {
+        favoriteIds.add(quote.id);
+        await _dbHelper.insertQuote(quote);
+      }
+
+      await prefs.setStringList(
+          'favorite_ids', favoriteIds.map((id) => id.toString()).toList());
+
+      loadFavorites();
+    } catch (e) {
+      print('Error toggling favorite: $e');
+    }
+  }
+
   bool isFavorite(int id) {
     return favoriteIds.contains(id);
   }

@@ -32,20 +32,17 @@ class DatabaseHelper {
     ''');
   }
 
-  // Insert a new quote
   Future<int> insertQuote(Quote quote) async {
     final db = await instance.database;
     return await db.insert('quotes', quote.toJson());
   }
 
-  // Fetch all quotes
   Future<List<Quote>> fetchAllQuotes() async {
     final db = await instance.database;
     final result = await db.query('quotes');
     return result.map((json) => Quote.fromJson(json)).toList();
   }
 
-  // Delete quote by ID
   Future<int> deleteQuote(int id) async {
     final db = await instance.database;
     return await db.delete('quotes', where: 'id = ?', whereArgs: [id]);

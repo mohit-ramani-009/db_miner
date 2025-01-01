@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.favorite),
             color: Colors.white,
             onPressed: () {
-              Get.toNamed('/favorites'); // Navigate to the favorites screen
+              Get.toNamed('/favorites');
             },
           ),
         ],
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.cyan,
       ),
       body: Container(
-        color: Colors.grey[200], // Light background color
+        color: Colors.grey[200],
         child: Obx(() {
           if (controller.quotes.isEmpty) {
             return Center(
@@ -81,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   onTap: () {
-                    // Navigate to DetailScreen with animation
                     Get.to(
                       DetailScreen(quote: quote),
                       transition: Transition.fadeIn,
@@ -89,8 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   trailing: Obx(() {
-                    return IconButton(
-                      icon: Icon(
+                    return GestureDetector(
+                      onTap: () {
+                        controller.toggleFavorite(quote);
+                      },
+                      child: Icon(
                         controller.isFavorite(quote.id)
                             ? Icons.favorite
                             : Icons.favorite_border,
@@ -98,11 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ? Colors.redAccent
                             : Colors.grey,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          controller.toggleFavorite(quote); // Toggle favorite status
-                        });
-                      },
                     );
                   }),
                 ),
