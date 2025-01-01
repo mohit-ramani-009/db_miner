@@ -25,7 +25,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           if (controller.favoriteQuotes.isEmpty) {
             return Center(child: Text('No favorite quotes yet!'));
           }
-
           return Obx(() {
             return ListView.builder(
               itemCount: controller.favoriteQuotes.length,
@@ -40,9 +39,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        setState(() {
-                          controller.toggleFavorite(quote);
-                        });
+                        controller.toggleFavorite(quote);
                       },
                     ),
                   ),
